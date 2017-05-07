@@ -1,0 +1,120 @@
+:root {
+  font: 400 36px 'Montserrat', sans-serif;
+}
+body {
+  background: #5E35B1; /*deep purple 500 */
+  margin: 0;
+}
+.container {
+  height: 100vh;
+  max-width: 360px;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+}
+.calculator {
+  background: #29434E; /* blue grey dark */
+  height: inherit;
+  max-height: 100%;
+  width: 100%;
+  border-radius: 15px;
+  box-shadow: 0 0 5px 3px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+.screen {
+  background: #FFAB00;  /* amber A700  */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px 20px 10px 20px;
+  color: #fff;
+  text-align: right;
+}
+.input {
+  height: 40px;  
+}
+.calculation {
+  height: 20px;
+  background: #29434E; /* blue grey dark */
+  color: #819CA9;  /* blue grey light*/
+  border-radius: 15px;
+  padding: 5px 10px;;
+  font-size: 0.4em;
+  font-weight: 500;
+}
+.keyboard {
+  padding: 20px 0px;
+  max-width: 320px;
+}
+.keys {
+  display: flex;  
+}
+.keys__key {
+  /* flex: 1 fils height and width of parent */
+  display: inline-block;
+  width: 45px;
+  height: 45px;
+  border-radius:36px;
+  background: #819CA9;  /* blue grey light*/
+  color: #29434E; /* blue grey dark */
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+.keys--clear {
+  background: #5E35B1; /*deep purple 500 */
+  color: #FFAB00;  /* amber A700  */
+}
+.keys--operator {
+  background: #546E7A;  /* blue grey */
+  color: #fff;
+}
+.keys--operator#divide{ 
+ margin-left: auto;
+}
+.keys--equals {
+  background: #FFAB00;  /* amber A700  */
+  color: #fff;
+}
+#zero {
+  width: 120px;
+}
+
+
+
+
+
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 20em) {  /* 320 / 16 = 20em */
+   .calculator {
+    
+    max-height: 550px;
+  }
+}
+
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 30em) {  /* 480 / 16 = 30em */
+  
+  .calculator {
+    margin-top: 10%;
+    height: 600px;
+  }
+  .screen {
+    border-radius: 15px 15px 0 0 ;
+  }
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 48em) {  /* 768 / 16 =  48em */
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 62em) {  /* 992 / 16 = 62em */
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 75em) { /* 1200 / 16 = 75em */
+}
