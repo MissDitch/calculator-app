@@ -53,9 +53,12 @@ function clearAll() {
 function clearEntry(e) {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
-    var removed = entries.pop();
-    output.innerHTML = "";
-    calculation.innerHTML = entries.join("");
+    if (!num) {
+        var removed = entries.pop();
+        current = entries[entries.length - 1];
+        output.innerHTML = "";
+        calculation.innerHTML = entries.join("");
+    }
 }  
 
 function calculate(e) {    
@@ -80,8 +83,9 @@ function calculate(e) {
         calculation.innerHTML += entry;       
     } 
     else {  
-        if (regExOperators.test(previous) ){
+        if (regExOperators.test(previous) || regExEquals.test(previous)){
             console.log("already entered operator");
+            output.innerHTML = entries[entries.length - 1];
             return; 
         }
         clear = true;
@@ -110,10 +114,11 @@ function calculate(e) {
             if (regExEquals.test(entry)) { // "="
                 output.innerHTML = calc;
                 calculation.innerHTML += "=" + calc;
-                entries.splice(0, 4, calc); 
+                entries.splice(0, 4, calc);  
+                current = calc;               
             } 
             else { calculation.innerHTML = calc + entry; }
-            entries.splice(0, 3, calc); 
+            entries.splice(0, 3, calc);             
         }       
     }  
 
