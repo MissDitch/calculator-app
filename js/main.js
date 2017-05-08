@@ -34,8 +34,6 @@ var operators = {
         '/': function(a, b) { return a / b },
         'x': function(a, b) { return a * b }    
     }; 
-//var entries = [];
-//var clear = true;
 
 function addListener(id, func) {
     var el = document.getElementById(id);
@@ -63,24 +61,30 @@ function clearEntry(e) {
 function calculate(e) {    
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
-    var regEx = /[\d.]/g;  
-    var regEx2 = /=/;    
+    var regExNumbers = /[\d.]/g;  
+    var regExEquals = /=/; 
+    var regExOperators = /[-+x/]/;   
     var entry = e.target.textContent;    
     calculation.style.visibility = "visible"; 
 
     if (clear) {output.innerHTML = "";}
     
-    if (regEx.test(entry)) {    
-        if (regEx2.test(calculation.textContent) ) { clearAll();}
+    if (regExNumbers.test(entry)) {    
+        if (regExEquals.test(calculation.textContent) ) { clearAll();}
         clear = false;                
         num += entry;
         output.innerHTML += entry;
         calculation.innerHTML += entry;       
     } 
-    else {       
+    
+    else {
+        if (regExOperators.test(entries[entries.length - 1])) {
+            console.log("already entered operator");
+            return; 
+        }//return};}
         clear = true;
         output.innerHTML = entry;
-        if (regEx.test(num)) {
+        if (regExNumbers.test(num)) {
             entries.push(parseFloat(num)) ;
             calc = num;
         }        
@@ -90,7 +94,7 @@ function calculate(e) {
         if (entries.length < 3) {  //there is no right operand yet              
             calculation.innerHTML += entry;
             console.log(calculation.textContent);
-            if (regEx2.test(calculation.textContent))  { 
+            if (regExEquals.test(calculation.textContent))  { 
                 calculation.innerHTML = entries.join(""); // get rid of last calculation
             }             
         }
@@ -101,7 +105,7 @@ function calculate(e) {
             calc = operators[prop](leftOperand, rightOperand);  
             if (!Number.isInteger(calc))  { calc = calc.toFixed(3); } 
            // console.log(entries);           
-            if (regEx2.test(entry)) { // "="
+            if (regExEquals.test(entry)) { // "="
                 output.innerHTML = calc;
                 calculation.innerHTML += "=" + calc;
                 entries.splice(0, 4, calc); 
@@ -109,7 +113,7 @@ function calculate(e) {
             else { calculation.innerHTML = calc + entry; }
             entries.splice(0, 3, calc);            
         }       
-    }     
+    }  
 }
 
 function countDigits(num) {
