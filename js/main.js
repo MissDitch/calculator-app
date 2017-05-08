@@ -7,24 +7,24 @@ function init() {
     addListener("AC", clearAll);
     addListener("CE", clearEntry);
 
-    addListener("zero", showEntry);
-    addListener("one", showEntry);
-    addListener("two", showEntry);
-    addListener("three", showEntry);
-    addListener("four", showEntry);
-    addListener("five", showEntry);
-    addListener("six", showEntry);
-    addListener("seven", showEntry);
-    addListener("eight", showEntry);
-    addListener("nine", showEntry);
-    addListener("dot", showEntry);
+    addListener("zero", calculate);
+    addListener("one", calculate);
+    addListener("two", calculate);
+    addListener("three", calculate);
+    addListener("four", calculate);
+    addListener("five", calculate);
+    addListener("six", calculate);
+    addListener("seven", calculate);
+    addListener("eight", calculate);
+    addListener("nine", calculate);
+    addListener("dot", calculate);
 
-    addListener("divide", showEntry);
-    addListener("multiply", showEntry);
-    addListener("minus", showEntry);
-    addListener("plus", showEntry);
+    addListener("divide", calculate);
+    addListener("multiply", calculate);
+    addListener("minus", calculate);
+    addListener("plus", calculate);
 
-    addListener("equals", showEntry);
+    addListener("equals", calculate);
 }
 
 var leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
@@ -42,7 +42,7 @@ function addListener(id, func) {
     return el.addEventListener("click", func); 
 }
 
-function clearAll(e) {
+function clearAll() {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
     output.innerHTML = "";
@@ -51,7 +51,7 @@ function clearAll(e) {
     entries.length = 0;
     calc = 0;
 }
-// only working for digits and operators
+// needs only to work for digits and operators
 function clearEntry(e) {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
@@ -60,82 +60,61 @@ function clearEntry(e) {
     calculation.innerHTML = entries.join("");
 }  
 
-/* if entry is digit, and next entry also a digit, previous entry must remain on output
-if entry is an operator, number must be removed from output and stored
-
-  */
-function showEntry(e) {    
+function calculate(e) {    
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
     var regEx = /[\d.]/g;  
-    var regEx2 = /^[=]$/;
-    
+    var regEx2 = /=/;    
     var entry = e.target.textContent;    
     calculation.style.visibility = "visible"; 
-    //calculation.innerHTML = entry;
-    if (clear) {
-        output.innerHTML = "";
-    }
+
+    if (clear) {output.innerHTML = "";}
+    
     if (regEx.test(entry)) {    
+        if (regEx2.test(calculation.textContent) ) { clearAll();}
         clear = false;                
         num += entry;
         output.innerHTML += entry;
-        calculation.innerHTML += entry;
-    }
-    else { 
-        //leftOperand = num;
-          
+        calculation.innerHTML += entry;       
+    } 
+    else {       
         clear = true;
         output.innerHTML = entry;
-        if(regEx.test(num)) {
+        if (regEx.test(num)) {
             entries.push(parseFloat(num)) ;
             calc = num;
         }        
-        entries.push(entry);
-        
-        num = ""; 
-        
+        entries.push(entry);        
+        num = "";         
 
-        if (entries.length < 3) {  //there is no right operand yet            
-            //calc = leftOperand;  
+        if (entries.length < 3) {  //there is no right operand yet              
             calculation.innerHTML += entry;
-            if (regEx2.test(entry)) {
-                output.innerHTML = calc;
-            }
+            console.log(calculation.textContent);
+            if (regEx2.test(calculation.textContent))  { 
+                calculation.innerHTML = entries.join(""); // get rid of last calculation
+            }             
         }
-        else  { 
+        else  { //there is a right operand now
             leftOperand = entries[0];
             rightOperand = entries[2];   
             var prop = entries[1];          
             calc = operators[prop](leftOperand, rightOperand);  
-            if (!Number.isInteger(calc))  {
-                    calc = calc.toFixed(3);
-                } 
-            console.log(entries);  
+            if (!Number.isInteger(calc))  { calc = calc.toFixed(3); } 
+           // console.log(entries);           
             if (regEx2.test(entry)) { // "="
-                //entries.pop();
                 output.innerHTML = calc;
                 calculation.innerHTML += "=" + calc;
                 entries.splice(0, 4, calc); 
-                //entries.length = 0;
-            } else {
-                calculation.innerHTML = calc + entry ;   
-                  
-            }
-            entries.splice(0, 3, calc);  
-            
-        }
-       
-    }
-   
-     
+            } 
+            else { calculation.innerHTML = calc + entry; }
+            entries.splice(0, 3, calc);            
+        }       
+    }     
 }
+
 function countDigits(num) {
     
 }
-
-
-
 
 init();
 
