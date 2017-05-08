@@ -27,7 +27,7 @@ function init() {
     addListener("equals", calculate);
 }
 
-var leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
+var current, previous, leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
 var operators = {
         '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
         '-': function(a, b) { return a - b },
@@ -65,6 +65,9 @@ function calculate(e) {
     var regExEquals = /=/; 
     var regExOperators = /[-+x/]/;   
     var entry = e.target.textContent;    
+    previous = current;
+    current = entry;  
+
     calculation.style.visibility = "visible"; 
 
     if (clear) {output.innerHTML = "";}
@@ -76,12 +79,11 @@ function calculate(e) {
         output.innerHTML += entry;
         calculation.innerHTML += entry;       
     } 
-    
-    else {
-        if (regExOperators.test(entries[entries.length - 1])) {
+    else {  
+        if (regExOperators.test(previous) ){
             console.log("already entered operator");
             return; 
-        }//return};}
+        }
         clear = true;
         output.innerHTML = entry;
         if (regExNumbers.test(num)) {
@@ -91,7 +93,7 @@ function calculate(e) {
         entries.push(entry);        
         num = "";         
 
-        if (entries.length < 3) {  //there is no right operand yet              
+        if (entries.length < 3) {  //there is no right operand yet       
             calculation.innerHTML += entry;
             console.log(calculation.textContent);
             if (regExEquals.test(calculation.textContent))  { 
@@ -111,9 +113,10 @@ function calculate(e) {
                 entries.splice(0, 4, calc); 
             } 
             else { calculation.innerHTML = calc + entry; }
-            entries.splice(0, 3, calc);            
+            entries.splice(0, 3, calc); 
         }       
     }  
+
 }
 
 function countDigits(num) {
