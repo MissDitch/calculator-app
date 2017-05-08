@@ -27,7 +27,7 @@ function init() {
     addListener("equals", calculate);
 }
 
-var current, previous, leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
+var current, previous, leftOperand, rightOperand, calc, num = [], entries = [], clear = true;
 var operators = {
         '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
         '-': function(a, b) { return a - b },
@@ -47,17 +47,34 @@ function clearAll() {
     calculation.innerHTML = "";
     calculation.style.visibility = "hidden";
     entries.length = 0;
+    num.length = 0;
     calc = 0;
 }
-// needs only to work for digits and operators
+
 function clearEntry(e) {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
-    if (!num) {
-        var removed = entries.pop();
+    if (num.length === 0) {
+        entries.pop();
         current = entries[entries.length - 1];
         output.innerHTML = "";
-        calculation.innerHTML = entries.join("");
+        if (entries.length === 0) {
+            calculation.innerHTML = "";
+            calculation.style.visibility = "hidden";
+        } else {
+            calculation.innerHTML = entries.join("");
+        }          
+    }
+    else {        
+        if (previous) {
+            current = previous;            
+        } 
+        num.pop(); 
+        output.innerHTML = num.join("");
+        if (entries.length === 0 && num.length === 0) {
+           clearAll();
+        } else {calculation.innerHTML = entries.join("").concat(num.join(""));
+        } 
     }
 }  
 
@@ -76,26 +93,26 @@ function calculate(e) {
     if (clear) {output.innerHTML = "";}
     
     if (regExNumbers.test(entry)) {    
-        if (regExEquals.test(calculation.textContent) ) { clearAll();}
+        if (regExEquals.test(calculation.textContent)) { clearAll();}
         clear = false;                
-        num += entry;
+        num.push(entry);
         output.innerHTML += entry;
         calculation.innerHTML += entry;       
     } 
     else {  
         if (regExOperators.test(previous) || regExEquals.test(previous)){
-            console.log("already entered operator");
-            output.innerHTML = entries[entries.length - 1];
+            output.innerHTML = previous; 
             return; 
         }
         clear = true;
         output.innerHTML = entry;
-        if (regExNumbers.test(num)) {
-            entries.push(parseFloat(num)) ;
-            calc = num;
+        var numString = num.join("");
+        if (regExNumbers.test(numString)) {
+            entries.push(parseFloat(numString)) ;
+            calc = numString;
         }        
         entries.push(entry);        
-        num = "";         
+        num = [];         
 
         if (entries.length < 3) {  //there is no right operand yet       
             calculation.innerHTML += entry;
@@ -120,8 +137,7 @@ function calculate(e) {
             else { calculation.innerHTML = calc + entry; }
             entries.splice(0, 3, calc);             
         }       
-    }  
-
+    }
 }
 
 function countDigits(num) {
