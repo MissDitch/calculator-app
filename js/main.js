@@ -27,7 +27,7 @@ function init() {
     addListener("equals", calculate);
 }
 
-var leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
+var current, previous, leftOperand, rightOperand, calc, num = "", entries = [], clear = true;
 var operators = {
         '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
         '-': function(a, b) { return a - b },
@@ -64,8 +64,11 @@ function calculate(e) {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
     var regEx = /[\d.]/g;  
-    var regEx2 = /=/;    
-    var entry = e.target.textContent;    
+    var regEx2 = /=/;  
+    var regExOperators = /[-+x/]/;  
+    var entry = e.target.textContent;  
+    previous = current;
+    current = entry;  
     calculation.style.visibility = "visible"; 
 
     if (clear) {output.innerHTML = "";}
@@ -77,7 +80,11 @@ function calculate(e) {
         output.innerHTML += entry;
         calculation.innerHTML += entry;       
     } 
-    else {       
+    else {  
+        if (regExOperators.test(previous) ){
+            console.log("already entered operator");
+            return; 
+        }
         clear = true;
         output.innerHTML = entry;
         if (regEx.test(num)) {
@@ -87,7 +94,7 @@ function calculate(e) {
         entries.push(entry);        
         num = "";         
 
-        if (entries.length < 3) {  //there is no right operand yet              
+        if (entries.length < 3) {  //there is no right operand yet       
             calculation.innerHTML += entry;
             console.log(calculation.textContent);
             if (regEx2.test(calculation.textContent))  { 
@@ -108,7 +115,7 @@ function calculate(e) {
             } 
             else { calculation.innerHTML = calc + entry; }
             entries.splice(0, 3, calc);            
-        }       
+        }   
     }     
 }
 
