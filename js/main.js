@@ -4,6 +4,7 @@ function init() {
 
     addListener("AC", removeAll);
     addListener("CE", removeEntry);
+    addListener("posNeg", toggleNegative);
 
     addListener("zero", calculate);
     addListener("one", calculate);
@@ -25,7 +26,7 @@ function init() {
     addListener("equals", calculate);
 }
 
-var current, previous, calc, number = [], entries = [], remove = true;
+var current, previous, calc, isNegative = false, number = [], entries = [], remove = true;
 var operators = {
     '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
     '-': function(a, b) { return a - b },
@@ -59,23 +60,38 @@ function removeEntry(e) {
         if (entries.length === 0) {
             calculation.innerHTML = "";
             calculation.style.visibility = "hidden";
-        } else { calculation.innerHTML = entries.join(""); }          
+        } else { calculation.innerHTML = entries.join(" "); }          
     } else {        
         if (previous) { current = previous; } 
         number.pop(); 
         output.innerHTML = number.join("");
         if (entries.length === 0 && number.length === 0) {
            removeAll();
-        } else { calculation.innerHTML = entries.join("").concat(number.join("")); } 
+        } else { calculation.innerHTML = entries.join(" ").concat(" " + number.join("")); } 
     }
 }  
+
+function toggleNegative() {
+    var regExEquals = /=/; 
+    if (regExEquals.test(calculation.textContent)) { removeAll();}
+    
+    if (!isNegative) {
+        number.unshift("-");
+        isNegative = true;        
+    } else {
+        number.shift();
+        isNegative = false;
+    }
+    output.innerHTML =  number.join("");
+    calculation.innerHTML = entries.join(" ").concat(" " + number.join(""));   
+}
 
 function calculate(e) {    
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
-    var regExNumbers = /[\d.]/g;  
-    var regExEquals = /=/; 
-    var regExOperators = /[-+x/]/;   
+    var regExNumbers = /[-\d.]/g;      
+    var regExEquals = /=/;     
+    var regExOperators = /^[-+x/]$/;    
     var entry = e.target.textContent;    
     previous = current;
     current = entry; 
@@ -84,42 +100,43 @@ function calculate(e) {
     if (remove) {output.innerHTML = "";}
     
     if (regExNumbers.test(entry)) {    
-        if (regExEquals.test(calculation.textContent)) { removeAll();} 
+        if (entries.length === 1) { removeAll();} 
         remove = false;                
         number.push(entry);
-        output.innerHTML += entry;
-        calculation.innerHTML += entry;       
+        output.innerHTML = number.join("");
+        calculation.innerHTML = entries.join(" ").concat(" " + number.join(""));       
     } else {  
         if (regExOperators.test(previous) || regExEquals.test(previous)){
             output.innerHTML = previous; 
-            return; 
+            return;  // no input of operator or "=" when last entry was an operator  
         }
         remove = true;
         output.innerHTML = entry;
         var numberString = number.join("");
         if (regExNumbers.test(numberString)) {
-            entries.push(parseFloat(numberString)) ;
+            entries.push(parseFloat(numberString));
             calc = numberString;
         }        
         entries.push(entry);        
-        number = [];         
+        number = []; 
+        isNegative = false;        
 
         if (entries.length < 3) {  //there is no right operand yet       
-            calculation.innerHTML += entry;
+            calculation.innerHTML += " " + entry;
             if (regExEquals.test(calculation.textContent))  { 
-                calculation.innerHTML = entries.join(""); 
+                calculation.innerHTML = entries.join(" "); 
             }             
         } else { 
             var prop = entries[1];          
             calc = operators[prop](entries[0], entries[2]);  
             if (!Number.isInteger(calc))  { calc = calc.toFixed(2); } 
-           // console.log(entries);           
+
             if (regExEquals.test(entry)) { 
                 output.innerHTML = calc;
-                calculation.innerHTML += "=" + calc;
+                calculation.innerHTML += " = " + calc;
                 entries.splice(0, 4, calc);  
                 current = calc;               
-            } else { calculation.innerHTML = calc + entry; }
+            } else { calculation.innerHTML = calc + " " + entry; }
             entries.splice(0, 3, calc);             
         }       
     }
