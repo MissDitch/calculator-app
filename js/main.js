@@ -26,7 +26,7 @@ function init() {
     addListener("equals", calculate);
 }
 
-var current, previous, calc, isNegative = false, number = [], entries = [], remove = true;
+var current, previous, calc, isNegative = false, operate = true; number = [], entries = [], remove = true;
 var operators = {
     '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
     '-': function(a, b) { return a - b },
@@ -89,7 +89,7 @@ function toggleNegative() {
 function calculate(e) {    
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
-    var regExNumbers = /[-\d.]/g;      
+    var regExNumbers = /[\d.]/g;      
     var regExEquals = /=/;     
     var regExOperators = /^[-+x/]$/;    
     var entry = e.target.textContent;    
@@ -101,14 +101,19 @@ function calculate(e) {
     
     if (regExNumbers.test(entry)) {    
         if (entries.length === 1) { removeAll();} 
-        remove = false;                
+        remove = false;  
+        operate = true;              
         number.push(entry);
         output.innerHTML = number.join("");
         calculation.innerHTML = entries.join(" ").concat(" " + number.join(""));       
     } else {  
-        if (regExOperators.test(previous) || regExEquals.test(previous)){
+        if (regExOperators.test(previous) || regExEquals.test(previous)) {
             output.innerHTML = previous; 
-            return;  // no input of operator or "=" when last entry was an operator  
+            operate = false;
+            return;  // no input of operator or "=" when last entry was an operator or there is nothing to calculate yet
+        }     
+        if ( regExEquals.test(entry) && entries.length === 0)   {
+            return;
         }
         remove = true;
         output.innerHTML = entry;
