@@ -24,14 +24,29 @@ function init() {
     addListener("plus", calculate);
 
     addListener("equals", calculate);
+    BigNumber.config({ DECIMAL_PLACES: 10, ROUNDING_MODE: 4 }) ;
 }
 
-var current, previous, calc, isNegative = false, operate = true; number = [], entries = [], remove = true;
+var current, previous, bigA, bigB, calc = null, isNegative = false, operate = true; number = [], entries = [], remove = true;
+
 var operators = {
-    '+': function(a, b) { return parseFloat(a) + parseFloat(b) },
-    '-': function(a, b) { return a - b },
-    '/': function(a, b) { return a / b },
-    'x': function(a, b) { return a * b }    
+    '+': function(a, b) { 
+            bigA = new BigNumber(a);
+            bigB = new BigNumber(b);
+            return bigA.plus(bigB) },
+    '-': function(a, b) { 
+            bigA = new BigNumber(a);
+            bigB = new BigNumber(b);
+            return bigA.minus(bigB) },
+    '/': function(a, b) { 
+            bigA = new BigNumber(a);
+            bigB = new BigNumber(b);
+            return bigA.dividedBy(bigB) },
+            
+    'x': function(a, b) {
+            bigA = new BigNumber(a);
+            bigB = new BigNumber(b);
+            return bigA.times(bigB) }     
 }; 
 
 function addListener(id, func) {
@@ -47,7 +62,7 @@ function removeAll() {
     calculation.style.visibility = "hidden";
     entries.length = 0;
     number.length = 0;
-    calc = 0;
+    calc = null;
 }
 
 function removeEntry(e) {
@@ -127,10 +142,9 @@ function calculate(e) {
         remove = true;
         output.innerHTML = entry;
         var numberString = number.join("");
-        //use BigNumber here ? or in operator object?
+        
         if (regExNumbers.test(numberString)) {
-            entries.push(parseFloat(numberString));
-            calc = numberString;
+            entries.push(numberString);
         }        
         entries.push(entry);        
         number = []; 
