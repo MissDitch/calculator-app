@@ -24,7 +24,24 @@ function init() {
     addListener("plus", calculate);
 
     addListener("equals", calculate);
-    BigNumber.config({ DECIMAL_PLACES: 10, ROUNDING_MODE: 4 }) ;
+    BigNumber.config({ 
+        DECIMAL_PLACES: 10, 
+        ROUNDING_MODE: 4,
+        FORMAT: {
+            // the decimal separator
+        decimalSeparator: '.',
+        // the grouping separator of the integer part
+        groupSeparator: ' ',
+        // the primary grouping size of the integer part
+        groupSize: 3,
+        // the secondary grouping size of the integer part
+        secondaryGroupSize: 0
+        // the grouping separator of the fraction part
+        //fractionGroupSeparator: ' ',
+        // the grouping size of the fraction part
+        //fractionGroupSize: 0
+        }
+     }) ;
 }
 
 var current, previous, bigA, bigB, calc = null, isNegative = false, operate = true; number = [], entries = [], remove = true;
@@ -33,20 +50,19 @@ var operators = {
     '+': function(a, b) { 
             bigA = new BigNumber(a);
             bigB = new BigNumber(b);
-            return bigA.plus(bigB) },
+            return bigA.plus(bigB).toFormat(); },
     '-': function(a, b) { 
             bigA = new BigNumber(a);
             bigB = new BigNumber(b);
-            return bigA.minus(bigB) },
+            return bigA.minus(bigB).toFormat(); },
     '/': function(a, b) { 
             bigA = new BigNumber(a);
             bigB = new BigNumber(b);
-            return bigA.dividedBy(bigB) },
-            
+            return bigA.dividedBy(bigB).toFormat(); },            
     'x': function(a, b) {
             bigA = new BigNumber(a);
             bigB = new BigNumber(b);
-            return bigA.times(bigB) }     
+            return bigA.times(bigB).toFormat(); }     
 }; 
 
 function addListener(id, func) {
@@ -118,9 +134,10 @@ function calculate(e) {
     
     if (regExNumbers.test(entry)) { // digit is entered   
         calculation.style.visibility = "visible"; 
-
         if (entries.length === 1) { // array contains result of last calculation
             removeAll();} // new calculation can start
+
+        if (entry === "." && number.indexOf(entry) > -1) { return; }
         remove = false;  
         operate = true;              
         number.push(entry);
