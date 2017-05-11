@@ -25,7 +25,7 @@ function init() {
 
     addListener("equals", calculate);
     BigNumber.config({ 
-        DECIMAL_PLACES: 10, 
+        DECIMAL_PLACES: 7, 
         ROUNDING_MODE: 4,
         FORMAT: {
             // the decimal separator
@@ -126,8 +126,10 @@ function calculate(e) {
     var regExNumbers = /[\d.]/g;      
     var regExEquals = /=/;     
     var regExOperators = /^[-+x/]$/;    
-    var entry = e.target.textContent;    
-    previous = current;
+    var entry = e.target.textContent;   
+    //if (operate) { previous = current; } 
+    //else { previous = number.join(""); }   
+    previous = current; 
     current = entry;         
 
     if (remove) {output.innerHTML = "";}
@@ -148,6 +150,7 @@ function calculate(e) {
 
         if (regExOperators.test(previous) || regExEquals.test(previous)) { 
             operate = false;
+            previous = entries[0];
             return;  // entering 2 operators is impossible
         }  
 
@@ -155,6 +158,11 @@ function calculate(e) {
             operate = false;
             calculation.style.visibility = "hidden";
             return;  //starting calculation with operator or equals sign is impossible
+        }
+
+        if (entry === "=" && entries.length < 2) { 
+            current = number.join("");
+            return; 
         }
         remove = true;
         output.innerHTML = entry;
@@ -165,25 +173,29 @@ function calculate(e) {
         }        
         entries.push(entry);        
         number = []; 
-        isNegative = false;        
+        isNegative = false;  
+        calculation.innerHTML = entries.join(" ");      
 
         if (entries.length < 3) {  // only left operand and operator in array      
-            calculation.innerHTML += " " + entry; 
             if (regExEquals.test(calculation.textContent))  { // previous calculation
                 calculation.innerHTML = entries.join(" "); // show new calculation
             }                     
         } else { // right operand and equals sign (or new operator): make calculation
             var prop = entries[1];          
             calc = operators[prop](entries[0], entries[2]);  
+            // spaces by formatting must be removed first
+            c = calc.replace(/[\s]/g, "");
 
             if (regExEquals.test(entry)) { 
                 output.innerHTML = calc;
-                calculation.innerHTML += " = " + calc;
-                entries.splice(0, 4, calc);  
+                calculation.innerHTML += " " + calc;          
+                
+
+                entries.splice(0, 4, c);  
                 current = calc;               
            } else {   
-                calculation.innerHTML = calc + " " + entry; }
-                entries.splice(0, 3, calc);     // calculation becomes left operand for next calculation        
+                calculation.innerHTML = c + " " + entry; }
+                entries.splice(0, 3, c);     // calculation becomes left operand for next calculation        
         }       
     }
 }
