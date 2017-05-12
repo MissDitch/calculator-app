@@ -32,11 +32,11 @@ body {
   text-align: right;
 }
 .input {
-  height: 40px;  
+  min-height: 40px;  
   font-size: 0.8em;
 }
 .calculation {
-  height: 20px;
+  /*height: 20px; */
   background: #29434E; /* blue grey dark */
   color: #819CA9;  /* blue grey light*/
   border-radius: 15px;

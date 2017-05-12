@@ -81,7 +81,7 @@ function removeAll() {
     calc = null;
 }
 
-function removeEntry(e) {
+function removeEntry() {
     var output = document.getElementById("output");
     var calculation = document.getElementById("calculation");
 
@@ -133,6 +133,12 @@ function calculate(e) {
     current = entry;         
 
     if (remove) {output.innerHTML = "";}
+
+    if (number.length > 10) {
+        alert("you reached the maximum number of digits");
+        number.pop();
+        return;
+    }
     
     if (regExNumbers.test(entry)) { // digit is entered   
         calculation.style.visibility = "visible"; 
@@ -188,7 +194,13 @@ function calculate(e) {
 
             if (regExEquals.test(entry)) { 
                 output.innerHTML = calc;
-                calculation.innerHTML += " " + calc;          
+                calculation.innerHTML += " " + calc;   
+
+                if (calculation.textContent.length > 35) {
+                    alert("can't show you this calculation because it's too big");
+                    removeEntry();
+                    return;
+                }       
                 
 
                 entries.splice(0, 4, c);  
