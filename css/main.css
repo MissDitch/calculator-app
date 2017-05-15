@@ -21,7 +21,7 @@ body {
   box-shadow: 0 0 6px 4px rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
 }
 .screen {
   background: #FFAB00;  /* amber A700  */
@@ -36,7 +36,6 @@ body {
   font-size: 0.8em;
 }
 .calculation {
-  /*height: 20px; */
   background: #29434E; /* blue grey dark */
   color: #819CA9;  /* blue grey light*/
   border-radius: 15px;
@@ -45,8 +44,15 @@ body {
   font-weight: 500;
 }
 .keyboard {
-  padding: 20px 0px;
+  padding: 10px 0px;
   max-width: 320px;
+}
+.title {
+  color: #819ca9;
+  font-size: 0.25em;
+  letter-spacing: 0.2em;
+  text-align: center;
+  padding: 0 0 5px 0;
 }
 .keys {
   display: flex;  
@@ -121,15 +127,13 @@ span#posNeg div:first-of-type {
 
 /* Custom, iPhone Retina */
 @media only screen and (min-width : 20em) {  /* 320 / 16 = 20em */
-   .calculator {
-    
+   .calculator {    
     max-height: 550px;
   }
 }
 
 /* Extra Small Devices, Phones */
-@media only screen and (min-width : 30em) {  /* 480 / 16 = 30em */
-  
+@media only screen and (min-width : 30em) {  /* 480 / 16 = 30em */  
   .calculator {
     margin-top: 10%;
     height: 600px;
