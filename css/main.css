@@ -5,6 +5,10 @@ body {
   background: #5E35B1; /*deep purple 500 */
   margin: 0;
 }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 .container {
   height: 100vh;
   max-width: 360px;
@@ -22,6 +26,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 3%;
 }
 .screen {
   background: #FFAB00;  /* amber A700  */
